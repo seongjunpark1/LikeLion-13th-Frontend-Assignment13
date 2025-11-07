@@ -11,6 +11,7 @@ export default function App() {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [searchMarker, setSearchMarker] = useState(null);
   const [map, setMap] = useState(null);
+  const [clickedPosition, setClickedPosition] = useState(null);
 
   const handlePolygonClick = () => {
     setCount(count + 1);
@@ -85,6 +86,13 @@ export default function App() {
         level={mapLevel} 
         draggable
         onCreate={setMap}
+        onClick={(_, mouseEvent) => {
+          const latlng = mouseEvent?.latLng;
+
+          if (!latlng) return;
+
+          setClickedPosition({ lat: latlng.getLat(), lng: latlng.getLng() });
+        }}
       >
         <Polygon
           path={[
@@ -149,6 +157,15 @@ export default function App() {
             >
               <div style={{ padding: "5px", color: "#000", minWidth: "150px" }}>
                 {searchMarker.content}
+              </div>
+            </MapMarker>
+          )}
+          {clickedPosition && (
+            <MapMarker position={clickedPosition} zIndex={2}>
+              <div style={{ padding: "5px", color: "#000", minWidth: "160px" }}>
+                클릭한 위치<br />
+                위도 {clickedPosition.lat.toFixed(6)} <br />
+                경도 {clickedPosition.lng.toFixed(6)}
               </div>
             </MapMarker>
           )}
